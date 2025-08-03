@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=4 uid="uid://1vg6bjn7l21t"]
+[gd_scene load_steps=13 format=4 uid="uid://1vg6bjn7l21t"]
 
 [ext_resource type="Script" uid="uid://qjo1mohvb6hg" path="res://scripts/main.gd" id="1_kp05q"]
 [ext_resource type="Texture2D" uid="uid://cvarh4gp0b40h" path="res://assets/tilemap_packed.png" id="2_3b2of"]
 [ext_resource type="PackedScene" uid="uid://chn0cag2gjs2o" path="res://scenes/player.tscn" id="3_vfq1e"]
+[ext_resource type="Shader" uid="uid://vgpkyj1h0cm5" path="res://shaders/fog_of_war.gdshader" id="4_66yhh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2t678"]
 texture = ExtResource("2_3b2of")
@@ -283,6 +284,20 @@ texture = ExtResource("2_3b2of")
 [sub_resource type="TileSet" id="TileSet_2jadk"]
 sources/0 = SubResource("TileSetAtlasSource_a46ls")
 
+[sub_resource type="Gradient" id="Gradient_eku8p"]
+offsets = PackedFloat32Array(0.213115, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.870588, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hm416"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_np1eh"]
+color_ramp = SubResource("Gradient_eku8p")
+noise = SubResource("FastNoiseLite_hm416")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_au760"]
+shader = ExtResource("4_66yhh")
+shader_parameter/noise = SubResource("NoiseTexture2D_np1eh")
+
 [node name="FogOfWar" type="Node2D"]
 script = ExtResource("1_kp05q")
 fog_pixelation = 64
@@ -299,3 +314,8 @@ tile_set = SubResource("TileSet_2jadk")
 [node name="Player" parent="." instance=ExtResource("3_vfq1e")]
 unique_name_in_owner = true
 position = Vector2(964, 582)
+
+[node name="FogSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_au760")
+centered = false
